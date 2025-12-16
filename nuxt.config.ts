@@ -26,6 +26,7 @@ export default defineNuxtConfig({
     naverClientSecret: "",
   },
   app: {
+    baseURL: '/LunchRecommend/',
     head: {
       title: 'Lunch Recommender',
       link: [
