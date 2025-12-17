@@ -8,7 +8,7 @@
         </v-avatar>
       </template>
       <v-app-bar-title class="font-weight-bold text-h6 text-grey-darken-3">
-        오늘 점심 뭐 먹지? (Kakao)
+        오늘 점심 뭐 먹지?
       </v-app-bar-title>
     </v-app-bar>
 
