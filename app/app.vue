@@ -294,7 +294,7 @@
           </v-card-text>
 
           <v-card-actions class="justify-center mt-4 gap-2">
-            <v-btn variant="text" color="grey" @click="dialog = false"
+            <v-btn variant="text" color="grey" @click="pickRandom"
               >다시 하기</v-btn
             >
             <v-btn
