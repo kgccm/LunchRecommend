@@ -31,6 +31,14 @@ export default defineNuxtConfig({
     head: {
       title: "Lunch Recommender",
       link: [
+        {
+          rel: "icon",
+          type: "image/x-icon",
+          href:
+            process.env.NODE_ENV === "production"
+              ? "/LunchRecommend/favicon.ico"
+              : "/favicon.ico",
+        },
         { rel: "preconnect", href: "https://fonts.googleapis.com" },
         {
           rel: "preconnect",
