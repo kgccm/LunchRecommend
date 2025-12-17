@@ -456,30 +456,34 @@ const searchLocation = () => {
   // Keyword Search for the location itself
   const options = {
     location: map.getCenter(),
-    radius: 1500, // 20km 반경 내 우선 검색
+    radius: 20000, // 20km 반경 내 우선 검색
   };
 
-  ps.keywordSearch(searchQuery.value, (data: any, status: any) => {
-    loading.value = false;
-    // @ts-ignore
-    const kakao = window.kakao;
+  ps.keywordSearch(
+    searchQuery.value,
+    (data: any, status: any) => {
+      loading.value = false;
+      // @ts-ignore
+      const kakao = window.kakao;
 
-    if (status === kakao.maps.services.Status.OK) {
-      // Move to the first result
-      const bounds = new kakao.maps.LatLngBounds();
-      bounds.extend(new kakao.maps.LatLng(data[0].y, data[0].x));
-      map.setBounds(bounds);
+      if (status === kakao.maps.services.Status.OK) {
+        // Move to the first result
+        const bounds = new kakao.maps.LatLngBounds();
+        bounds.extend(new kakao.maps.LatLng(data[0].y, data[0].x));
+        map.setBounds(bounds);
 
-      showMsg(`'${searchQuery.value}'(으)로 이동했습니다.`);
+        showMsg(`'${searchQuery.value}'(으)로 이동했습니다.`);
 
-      // Auto search after moving
-      setTimeout(() => {
-        searchNearbyRestaurants();
-      }, 500);
-    } else {
-      showMsg("장소를 찾을 수 없습니다.", "error");
-    }
-  });
+        // Auto search after moving
+        setTimeout(() => {
+          searchNearbyRestaurants();
+        }, 500);
+      } else {
+        showMsg("장소를 찾을 수 없습니다.", "error");
+      }
+    },
+    options
+  );
 };
 
 const onCategoryChange = (cat: string) => {
