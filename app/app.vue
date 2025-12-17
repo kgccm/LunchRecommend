@@ -434,24 +434,27 @@ const getCurrentLocation = () => {
         map.panTo(locPosition);
         loading.value = false;
 
-        // Optional: Auto search
-        // setTimeout(() => searchNearbyRestaurants(), 500);
+        // Auto search after finding location
+        setTimeout(() => searchNearbyRestaurants(), 500);
       },
       (err) => {
         console.error(err);
         showMsg("위치 권한을 허용해주세요.", "info");
         loading.value = false;
+        // Even if location fails, try to search around default center
+        setTimeout(() => searchNearbyRestaurants(), 500);
       }
     );
   }
 };
 
-// 1. Search Location (e.g., "Gangnam Station") and move map
+// 1. Search Location (e.g., "Gangnam Station" or "Specific Restaurant")
 const searchLocation = () => {
   if (!searchQuery.value) return;
   if (!ps) return;
 
   loading.value = true;
+  selectedCategory.value = ""; // Clear category selection on manual search
 
   // Keyword Search with location bias
   const options = {
@@ -459,37 +462,59 @@ const searchLocation = () => {
     radius: 2000, // 2km
   };
 
-  const searchCallback = (data: any, status: any) => {
+  const searchCallback = (data: any, status: any, _pagination: any) => {
     loading.value = false;
     // @ts-ignore
     const kakao = window.kakao;
 
     if (status === kakao.maps.services.Status.OK) {
+      // 1. Move map to the first result
       const bounds = new kakao.maps.LatLngBounds();
-      bounds.extend(new kakao.maps.LatLng(data[0].y, data[0].x));
+      // bounds.extend(new kakao.maps.LatLng(data[0].y, data[0].x));
+      // Extend bounds for ALL results to show them all
+      data.forEach((place: any) => {
+        bounds.extend(new kakao.maps.LatLng(place.y, place.x));
+      });
       map.setBounds(bounds);
 
-      showMsg(`'${searchQuery.value}'(으)로 이동했습니다.`);
-      setTimeout(() => searchNearbyRestaurants(), 500);
+      // 2. Update the list with THESE results (don't search nearby again)
+      restaurants.value = data;
+      displayMarkers(data);
+      pagination.value = _pagination;
+      searched.value = true;
+
+      showMsg(`'${searchQuery.value}' 검색 결과: ${data.length}건`);
     } else if (status === kakao.maps.services.Status.ZERO_RESULT && options) {
       // Fallback: Global search if local search fails
       // @ts-ignore
-      ps.keywordSearch(searchQuery.value, (d, s) => {
+      ps.keywordSearch(searchQuery.value, (d, s, p) => {
         if (s === kakao.maps.services.Status.OK) {
           const bounds = new kakao.maps.LatLngBounds();
-          bounds.extend(new kakao.maps.LatLng(d[0].y, d[0].x));
+          d.forEach((place: any) => {
+            bounds.extend(new kakao.maps.LatLng(place.y, place.x));
+          });
           map.setBounds(bounds);
-          showMsg(`전국 검색 결과로 이동합니다.`);
-          setTimeout(() => searchNearbyRestaurants(), 500);
+
+          // Update list with global results
+          restaurants.value = d;
+          displayMarkers(d);
+          pagination.value = p;
+          searched.value = true;
+
+          showMsg(`전국 검색 결과: ${d.length}건`);
         } else {
           showMsg("장소를 찾을 수 없습니다.", "error");
+          restaurants.value = [];
         }
       });
     } else {
       showMsg("장소를 찾을 수 없습니다.", "error");
+      restaurants.value = [];
     }
   };
 
+  // Clear existing markers before search
+  removeMarkers();
   ps.keywordSearch(searchQuery.value, searchCallback, options);
 };
 
