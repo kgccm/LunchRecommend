@@ -27,6 +27,7 @@ export default defineNuxtConfig({
     },
   },
   app: {
+    baseURL: process.env.NODE_ENV === "production" ? "/LunchRecommend/" : "/",
     head: {
       title: "Lunch Recommender",
       link: [
