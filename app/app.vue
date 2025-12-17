@@ -456,7 +456,7 @@ const searchLocation = () => {
   // Keyword Search with location bias
   const options = {
     location: map.getCenter(),
-    radius: 20000, // 20km
+    radius: 2000, // 2km
   };
 
   const searchCallback = (data: any, status: any) => {
