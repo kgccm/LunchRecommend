@@ -454,6 +454,11 @@ const searchLocation = () => {
   loading.value = true;
 
   // Keyword Search for the location itself
+  const options = {
+    location: map.getCenter(),
+    radius: 20000, // 20km 반경 내 우선 검색
+  };
+
   ps.keywordSearch(searchQuery.value, (data: any, status: any) => {
     loading.value = false;
     // @ts-ignore
