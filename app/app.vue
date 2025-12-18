@@ -13,14 +13,21 @@
     </v-app-bar>
 
     <v-main>
-      <v-container class="h-100 align-start pt-4 pt-md-16">
-        <v-row justify="center">
-          <v-col cols="12" md="10" lg="8" xl="6">
-            <!-- Sticky Container for Map & Controls -->
-            <div class="sticky-header bg-background pb-2" style="z-index: 10;">
+      <v-container class="h-100 align-start pt-4 pt-md-16" fluid>
+        <v-row justify="center" class="h-100">
+          <v-col
+            cols="12"
+            md="10"
+            lg="8"
+            xl="6"
+            class="d-flex flex-column h-100"
+            style="max-height: calc(100vh - 80px)"
+          >
+            <!-- Fixed Top Section: Map & Controls -->
+            <div class="flex-shrink-0 bg-background pb-2">
               <!-- Map Container -->
               <v-card
-                class="mx-auto rounded-xl elevation-3 mb-6 map-card-container position-relative"
+                class="mx-auto rounded-xl elevation-3 mb-4 map-card-container position-relative"
               >
                 <div id="map" class="map-view"></div>
 
@@ -114,8 +121,11 @@
                   ></v-btn>
                 </div>
               </v-card>
+            </div>
 
-              <!-- Results Header & Random Button (Also Sticky) -->
+            <!-- Scrollable Bottom Section: List -->
+            <div class="flex-grow-1 overflow-y-auto px-1 pb-4 scroll-container">
+              <!-- Results Header & Random Button -->
               <div
                 v-if="restaurants.length > 0"
                 class="d-flex flex-wrap justify-space-between align-end px-2 gap-2 mb-2"
@@ -146,12 +156,11 @@
                   랜덤 추천 돌리기
                 </v-btn>
               </div>
-            </div>
 
-            <!-- Results Section (Scrollable) -->
-            <v-slide-y-transition>
-              <div v-if="restaurants.length > 0">
-                <v-row>
+              <!-- List -->
+              <v-slide-y-transition>
+                <div v-if="restaurants.length > 0">
+                  <v-row>
                   <v-col
                     v-for="(place, index) in restaurants"
                     :key="place.id"
@@ -741,10 +750,13 @@ const showMsg = (text: string, color = "success") => {
 .gap-2 {
   gap: 8px;
 }
-.sticky-header {
-  position: sticky;
-  top: 64px; /* Adjust based on app bar height */
-  z-index: 100;
-  background-color: #f8f9fa; /* Match app background to cover content behind */
+/* Hide scrollbar for Chrome, Safari and Opera */
+.scroll-container::-webkit-scrollbar {
+  display: none;
+}
+/* Hide scrollbar for IE, Edge and Firefox */
+.scroll-container {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 </style>
