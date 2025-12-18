@@ -13,161 +13,147 @@
     </v-app-bar>
 
     <v-main>
-      <v-container class="h-100 align-start pt-4 pt-md-16" fluid>
-        <v-row justify="center" class="h-100">
-          <v-col
-            cols="12"
-            md="10"
-            lg="8"
-            xl="6"
-            class="d-flex flex-column h-100"
-            style="max-height: calc(100vh - 80px)"
-          >
-            <!-- Fixed Top Section: Map & Controls -->
-            <div class="flex-shrink-0 bg-background pb-2">
-              <!-- Map Container -->
-              <v-card
-                class="mx-auto rounded-xl elevation-3 mb-4 map-card-container position-relative"
-              >
-                <div id="map" class="map-view"></div>
+      <v-container class="h-100 align-start pt-4 pt-md-16">
+        <v-row justify="center">
+          <v-col cols="12" md="10" lg="8" xl="6">
+            <!-- Map Container -->
+            <v-card
+              class="mx-auto rounded-xl elevation-3 mb-6 map-card-container position-relative"
+            >
+              <div id="map" class="map-view"></div>
 
-                <!-- Map Overlay Controls (Search Bar & Filters) -->
-                <div
-                  class="map-overlay-top px-4 py-3 d-flex flex-column align-center w-100"
-                >
-                  <!-- Search Bar -->
-                  <v-card
-                    class="rounded-pill px-2 py-1 d-flex align-center elevation-2 w-100 mb-2"
-                    style="max-width: 400px"
-                    color="surface"
-                  >
-                    <v-text-field
-                      v-model="searchQuery"
-                      density="compact"
-                      variant="plain"
-                      hide-details
-                      prepend-inner-icon="mdi-magnify"
-                      placeholder="장소 검색 (예: 강남역)"
-                      class="ml-2 font-weight-bold"
-                      @keyup.enter="searchLocation"
-                      single-line
-                    ></v-text-field>
-                    <v-btn
-                      icon="mdi-arrow-right"
-                      size="small"
-                      variant="text"
-                      color="primary"
-                      @click="searchLocation"
-                    ></v-btn>
-                  </v-card>
-
-                  <!-- Category Filters -->
-                  <v-slide-group
-                    v-model="selectedCategory"
-                    show-arrows
-                    class="w-100"
-                    style="max-width: 600px"
-                    selected-class="bg-primary text-white"
-                  >
-                    <v-slide-group-item
-                      v-for="cat in categories"
-                      :key="cat"
-                      v-slot="{ isSelected, toggle }"
-                      :value="cat"
-                    >
-                      <v-chip
-                        class="ma-1 font-weight-bold elevation-1"
-                        :color="isSelected ? 'primary' : 'white'"
-                        :variant="isSelected ? 'flat' : 'elevated'"
-                        @click="
-                          () => {
-                            toggle();
-                            onCategoryChange(cat);
-                          }
-                        "
-                      >
-                        {{ cat }}
-                      </v-chip>
-                    </v-slide-group-item>
-                  </v-slide-group>
-                </div>
-
-                <!-- Bottom Overlay Container -->
-                <div
-                  class="map-overlay-bottom pb-4 d-flex justify-center align-end w-100"
-                >
-                  <!-- Search Nearby Button -->
-                  <v-btn
-                    color="warning"
-                    rounded="pill"
-                    size="large"
-                    prepend-icon="mdi-silverware-fork-knife"
-                    class="elevation-4 font-weight-bold mb-2 pointer-events-auto"
-                    :loading="loading"
-                    @click="searchNearbyRestaurants"
-                  >
-                    이 지역 맛집 찾기
-                  </v-btn>
-
-                  <!-- My Location FAB -->
-                  <v-btn
-                    icon="mdi-crosshairs-gps"
-                    color="white"
-                    size="small"
-                    class="position-absolute elevation-3 pointer-events-auto"
-                    style="right: 16px; bottom: 24px; color: #333"
-                    :loading="loading"
-                    @click="getCurrentLocation"
-                  ></v-btn>
-                </div>
-              </v-card>
-            </div>
-
-            <!-- Scrollable Bottom Section: List -->
-            <div class="flex-grow-1 overflow-y-auto px-1 pb-4 scroll-container">
-              <!-- Results Header & Random Button -->
+              <!-- Map Overlay Controls (Search Bar & Filters) -->
               <div
-                v-if="restaurants.length > 0"
-                class="d-flex flex-wrap justify-space-between align-end px-2 gap-2 mb-2"
+                class="map-overlay-top px-4 py-3 d-flex flex-column align-center w-100"
               >
-                <div>
-                  <span
-                    class="text-h6 text-md-h5 font-weight-bold text-grey-darken-3"
-                  >
-                    발견한 맛집
-                  </span>
-                  <v-chip
-                    class="ml-2 font-weight-bold"
-                    color="warning"
-                    size="small"
-                    variant="flat"
-                  >
-                    {{ restaurants.length }}곳
-                  </v-chip>
-                </div>
-                <v-btn
-                  color="secondary"
-                  size="large"
-                  prepend-icon="mdi-slot-machine"
-                  class="font-weight-bold text-white pulse-animation w-100 w-sm-auto mt-2 mt-sm-0"
-                  elevation="4"
-                  @click="pickRandom"
+                <!-- Search Bar -->
+                <v-card
+                  class="rounded-pill px-2 py-1 d-flex align-center elevation-2 w-100 mb-2"
+                  style="max-width: 400px"
+                  color="surface"
                 >
-                  랜덤 추천 돌리기
-                </v-btn>
+                  <v-text-field
+                    v-model="searchQuery"
+                    density="compact"
+                    variant="plain"
+                    hide-details
+                    prepend-inner-icon="mdi-magnify"
+                    placeholder="장소 검색 (예: 강남역)"
+                    class="ml-2 font-weight-bold"
+                    @keyup.enter="searchLocation"
+                    single-line
+                  ></v-text-field>
+                  <v-btn
+                    icon="mdi-arrow-right"
+                    size="small"
+                    variant="text"
+                    color="primary"
+                    @click="searchLocation"
+                  ></v-btn>
+                </v-card>
+
+                <!-- Category Filters -->
+                <v-slide-group
+                  v-model="selectedCategory"
+                  show-arrows
+                  class="w-100"
+                  style="max-width: 600px"
+                  selected-class="bg-primary text-white"
+                >
+                  <v-slide-group-item
+                    v-for="cat in categories"
+                    :key="cat"
+                    v-slot="{ isSelected, toggle }"
+                    :value="cat"
+                  >
+                    <v-chip
+                      class="ma-1 font-weight-bold elevation-1"
+                      :color="isSelected ? 'primary' : 'white'"
+                      :variant="isSelected ? 'flat' : 'elevated'"
+                      @click="
+                        () => {
+                          toggle();
+                          onCategoryChange(cat);
+                        }
+                      "
+                    >
+                      {{ cat }}
+                    </v-chip>
+                  </v-slide-group-item>
+                </v-slide-group>
               </div>
 
-              <!-- List -->
-              <v-slide-y-transition>
-                <div v-if="restaurants.length > 0">
-                  <v-row>
-                    <v-col
-                      v-for="(place, index) in restaurants"
-                      :key="place.id"
-                      cols="12"
-                      sm="6"
-                      lg="4"
+              <!-- Bottom Overlay Container -->
+              <div
+                class="map-overlay-bottom pb-4 d-flex justify-center align-end w-100"
+              >
+                <!-- Search Nearby Button -->
+                <v-btn
+                  color="warning"
+                  rounded="pill"
+                  size="large"
+                  prepend-icon="mdi-silverware-fork-knife"
+                  class="elevation-4 font-weight-bold mb-2 pointer-events-auto"
+                  :loading="loading"
+                  @click="searchNearbyRestaurants"
+                >
+                  이 지역 맛집 찾기
+                </v-btn>
+
+                <!-- My Location FAB -->
+                <v-btn
+                  icon="mdi-crosshairs-gps"
+                  color="white"
+                  size="small"
+                  class="position-absolute elevation-3 pointer-events-auto"
+                  style="right: 16px; bottom: 24px; color: #333"
+                  :loading="loading"
+                  @click="getCurrentLocation"
+                ></v-btn>
+              </div>
+            </v-card>
+
+            <!-- Results Section -->
+            <v-slide-y-transition>
+              <div v-if="restaurants.length > 0">
+                <div
+                  class="d-flex flex-wrap justify-space-between align-end mb-4 px-2 gap-2"
+                >
+                  <div>
+                    <span
+                      class="text-h6 text-md-h5 font-weight-bold text-grey-darken-3"
                     >
+                      발견한 맛집
+                    </span>
+                    <v-chip
+                      class="ml-2 font-weight-bold"
+                      color="warning"
+                      size="small"
+                      variant="flat"
+                    >
+                      {{ restaurants.length }}곳
+                    </v-chip>
+                  </div>
+                  <v-btn
+                    color="secondary"
+                    size="large"
+                    prepend-icon="mdi-slot-machine"
+                    class="font-weight-bold text-white pulse-animation w-100 w-sm-auto mt-2 mt-sm-0"
+                    elevation="4"
+                    @click="pickRandom"
+                  >
+                    랜덤 추천 돌리기
+                  </v-btn>
+                </div>
+
+                <v-row>
+                  <v-col
+                    v-for="(place, index) in restaurants"
+                    :key="place.id"
+                    cols="12"
+                    sm="6"
+                    lg="4"
+                  >
                     <v-card
                       class="h-100 restaurant-card border-thin"
                       elevation="0"
@@ -231,7 +217,7 @@
                       </v-card-actions>
                     </v-card>
                   </v-col>
-                  </v-row>
+                </v-row>
 
                 <!-- Load More Button -->
                 <div
@@ -273,6 +259,19 @@
           </v-col>
         </v-row>
       </v-container>
+
+      <!-- Scroll to Top Button -->
+      <v-fade-transition>
+        <v-btn
+          v-show="showScrollTop"
+          color="secondary"
+          icon="mdi-arrow-up"
+          size="large"
+          class="position-fixed elevation-4"
+          style="bottom: 24px; right: 24px; z-index: 1000"
+          @click="scrollToTop"
+        ></v-btn>
+      </v-fade-transition>
 
       <!-- Winner Dialog -->
       <v-dialog
@@ -357,7 +356,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 
 // State
 const loading = ref(false);
@@ -369,6 +368,7 @@ const winner = ref<any>(null);
 const snackbar = ref(false);
 const snackbarText = ref("");
 const snackbarColor = ref("success");
+const showScrollTop = ref(false);
 
 // Categories
 const categories = [
@@ -421,7 +421,24 @@ onMounted(() => {
       initMap();
     });
   }
+  
+  window.addEventListener('scroll', handleScroll);
 });
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll);
+});
+
+const handleScroll = () => {
+  showScrollTop.value = window.scrollY > 300;
+};
+
+const scrollToTop = () => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+};
 
 const initMap = () => {
   const container = document.getElementById("map");
@@ -749,14 +766,5 @@ const showMsg = (text: string, color = "success") => {
 }
 .gap-2 {
   gap: 8px;
-}
-/* Hide scrollbar for Chrome, Safari and Opera */
-.scroll-container::-webkit-scrollbar {
-  display: none;
-}
-/* Hide scrollbar for IE, Edge and Firefox */
-.scroll-container {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
 }
 </style>
