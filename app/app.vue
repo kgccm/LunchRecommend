@@ -308,15 +308,6 @@
                 </div>
               </div>
             </v-card>
-
-            <!-- Walking Time Info -->
-            <div v-if="getWalkingInfo" class="d-flex align-center justify-center gap-2 mb-2 text-grey-darken-1">
-              <v-icon color="success">mdi-walk</v-icon>
-              <span class="font-weight-bold">
-                현 위치에서 도보 약 <span class="text-success">{{ getWalkingInfo.time }}분</span>
-                <span class="text-caption text-grey ml-1">({{ getWalkingInfo.distance }})</span>
-              </span>
-            </div>
           </v-card-text>
 
           <v-card-actions class="justify-center mt-4 gap-2">
@@ -441,10 +432,6 @@ const initMap = () => {
   getCurrentLocation();
 };
 
-const userLocation = ref<{ lat: number; lng: number } | null>(null);
-
-// ... existing code ...
-
 const getCurrentLocation = () => {
   if (navigator.geolocation) {
     loading.value = true;
@@ -461,49 +448,26 @@ const getCurrentLocation = () => {
         const lat = pos.coords.latitude;
         const lon = pos.coords.longitude;
 
-        // Save user location
-        userLocation.value = { lat, lng: lon };
-
         if (!map) return;
-// ... existing code ...
+
+        const locPosition = new kakao.maps.LatLng(lat, lon);
+
+        map.panTo(locPosition);
+        loading.value = false;
+
+        // Auto search nearby restaurants after moving
+        setTimeout(() => searchNearbyRestaurants(), 500);
       },
       (err) => {
-        // ...
+        console.error(err);
+        showMsg("위치 권한을 허용해주세요.", "info");
+        loading.value = false;
+        // Even if location fails, try to search around default center
+        setTimeout(() => searchNearbyRestaurants(), 500);
       }
     );
   }
 };
-
-const getWalkingInfo = computed(() => {
-  if (!userLocation.value || !winner.value) return null;
-  
-  const lat1 = userLocation.value.lat;
-  const lon1 = userLocation.value.lng;
-  const lat2 = parseFloat(winner.value.y);
-  const lon2 = parseFloat(winner.value.x);
-
-  const R = 6371; // Earth radius km
-  const dLat = (lat2 - lat1) * (Math.PI / 180);
-  const dLon = (lon2 - lon1) * (Math.PI / 180);
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(lat1 * (Math.PI / 180)) *
-      Math.cos(lat2 * (Math.PI / 180)) *
-      Math.sin(dLon / 2) *
-      Math.sin(dLon / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  const distanceKm = R * c;
-  const distanceM = Math.round(distanceKm * 1000);
-
-  // Avg walking speed ~4km/h = ~67m/min
-  const walkingMin = Math.ceil(distanceM / 67);
-
-  return {
-    distance: distanceM >= 1000 ? `${(distanceM / 1000).toFixed(1)}km` : `${distanceM}m`,
-    time: walkingMin
-  };
-});
-
 
 // 1. Search Location (e.g., "Gangnam Station" or "Specific Restaurant")
 const searchLocation = () => {
