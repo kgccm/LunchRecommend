@@ -15,7 +15,7 @@
     <v-main>
       <v-container class="h-100 align-start pt-4">
         <v-row justify="center">
-          <v-col cols="12" md="10" lg="8" xl="6">
+          <v-col cols="12" md="10" lg="12" xl="8">
             <!-- Map Container -->
             <v-card
               class="mx-auto rounded-xl elevation-3 mb-6 map-card-container position-relative"
@@ -396,7 +396,7 @@
         :color="snackbarColor"
         location="top"
         rounded="pill"
-        style="top: 80px"
+        style="top: -55px"
       >
         <div
           class="d-flex align-center justify-center text-center w-100 font-weight-bold"
