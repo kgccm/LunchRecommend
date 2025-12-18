@@ -158,28 +158,22 @@
 
             <!-- List -->
             <v-slide-y-transition>
-                <!-- Skeleton Loader -->
-                <div v-if="loading" class="mt-4">
-                  <v-row>
-                    <v-col
-                      cols="12"
-                      sm="6"
-                      lg="4"
-                      v-for="n in 6"
-                      :key="n"
-                    >
-                      <v-skeleton-loader
-                        class="rounded-lg border-thin"
-                        type="card"
-                        height="200"
-                        elevation="0"
-                      ></v-skeleton-loader>
-                    </v-col>
-                  </v-row>
-                </div>
+              <!-- Skeleton Loader -->
+              <div v-if="loading" class="mt-4">
+                <v-row>
+                  <v-col cols="12" sm="6" lg="4" v-for="n in 6" :key="n">
+                    <v-skeleton-loader
+                      class="rounded-lg border-thin"
+                      type="card"
+                      height="200"
+                      elevation="0"
+                    ></v-skeleton-loader>
+                  </v-col>
+                </v-row>
+              </div>
 
-                <div v-else-if="restaurants.length > 0">
-                  <v-row>
+              <div v-else-if="restaurants.length > 0">
+                <v-row>
                   <v-col
                     v-for="(place, index) in restaurants"
                     :key="place.id"
@@ -327,7 +321,7 @@
             <div class="text-h5 font-weight-bold text-grey-darken-3 mb-2">
               {{ winner?.place_name }}
             </div>
-            
+
             <div v-if="!isRolling">
               <v-chip color="secondary" class="mb-6 font-weight-bold">
                 {{ winner?.category_name?.split(">").pop()?.trim() }}
@@ -347,20 +341,29 @@
                 <div class="d-flex flex-column align-center text-grey-darken-3">
                   <div class="d-flex align-center gap-1 mb-1">
                     <v-icon size="small" color="primary">mdi-map-marker</v-icon>
-                    <span class="text-body-2 font-weight-medium text-decoration-underline">
+                    <span
+                      class="text-body-2 font-weight-medium text-decoration-underline"
+                    >
                       {{ winner.road_address_name || winner.address_name }}
                     </span>
                   </div>
-                  <div class="text-caption text-primary font-weight-bold d-flex align-center">
-                    상세보기 <v-icon size="x-small" icon="mdi-chevron-right"></v-icon>
+                  <div
+                    class="text-caption text-primary font-weight-bold d-flex align-center"
+                  >
+                    상세보기
+                    <v-icon size="x-small" icon="mdi-chevron-right"></v-icon>
                   </div>
                 </div>
               </v-card>
             </div>
-            
+
             <!-- Rolling State UI -->
             <div v-else class="py-10">
-              <v-progress-circular indeterminate color="warning" size="40"></v-progress-circular>
+              <v-progress-circular
+                indeterminate
+                color="warning"
+                size="40"
+              ></v-progress-circular>
               <div class="mt-4 text-body-1 font-weight-bold text-grey-darken-2">
                 메뉴 고르는 중...
               </div>
@@ -368,7 +371,11 @@
           </v-card-text>
 
           <v-card-actions class="justify-center mt-4 gap-2">
-            <v-btn variant="text" color="grey" @click="pickRandom" :disabled="isRolling"
+            <v-btn
+              variant="text"
+              color="grey"
+              @click="pickRandom"
+              :disabled="isRolling"
               >다시 하기</v-btn
             >
             <v-btn
@@ -467,12 +474,12 @@ onMounted(() => {
       initMap();
     });
   }
-  
-  window.addEventListener('scroll', handleScroll);
+
+  window.addEventListener("scroll", handleScroll);
 });
 
 onUnmounted(() => {
-  window.removeEventListener('scroll', handleScroll);
+  window.removeEventListener("scroll", handleScroll);
 });
 
 const handleScroll = () => {
@@ -482,7 +489,7 @@ const handleScroll = () => {
 const scrollToTop = () => {
   window.scrollTo({
     top: 0,
-    behavior: 'smooth'
+    behavior: "smooth",
   });
 };
 
@@ -735,19 +742,19 @@ const panTo = (lat: any, lon: any, id: string) => {
 
 const pickRandom = () => {
   if (restaurants.value.length === 0) return;
-  
+
   dialog.value = true;
   isRolling.value = true;
-  
+
   // Roulette Animation
   let counter = 0;
-  const maxRolls = 20; // 2 seconds (20 * 100ms)
-  
+  const maxRolls = 10; // 2 seconds (20 * 100ms)
+
   const interval = setInterval(() => {
     const randomIndex = Math.floor(Math.random() * restaurants.value.length);
     winner.value = restaurants.value[randomIndex];
     counter++;
-    
+
     if (counter >= maxRolls) {
       clearInterval(interval);
       isRolling.value = false;
