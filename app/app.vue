@@ -113,8 +113,40 @@
               </div>
             </v-card>
 
-              <!-- List -->
-              <v-slide-y-transition>
+            <!-- Results Header & Random Button -->
+            <div
+              v-if="restaurants.length > 0"
+              class="d-flex flex-wrap justify-space-between align-end mb-4 px-2 gap-2"
+            >
+              <div>
+                <span
+                  class="text-h6 text-md-h5 font-weight-bold text-grey-darken-3"
+                >
+                  발견한 맛집
+                </span>
+                <v-chip
+                  class="ml-2 font-weight-bold"
+                  color="warning"
+                  size="small"
+                  variant="flat"
+                >
+                  {{ restaurants.length }}곳
+                </v-chip>
+              </div>
+              <v-btn
+                color="secondary"
+                size="large"
+                prepend-icon="mdi-slot-machine"
+                class="font-weight-bold text-white pulse-animation w-100 w-sm-auto mt-2 mt-sm-0"
+                elevation="4"
+                @click="pickRandom"
+              >
+                랜덤 추천 돌리기
+              </v-btn>
+            </div>
+
+            <!-- List -->
+            <v-slide-y-transition>
                 <!-- Skeleton Loader -->
                 <div v-if="loading" class="mt-4">
                   <v-row>
