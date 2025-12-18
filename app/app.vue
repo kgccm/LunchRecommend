@@ -774,7 +774,7 @@ const showMsg = (text: string, color = "success") => {
 <style scoped>
 .map-card-container {
   position: relative;
-  height: 400px;
+  height: 500px;
   width: 100%;
 }
 
