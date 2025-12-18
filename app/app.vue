@@ -196,7 +196,7 @@
                           >
                             <v-icon
                               color="warning"
-                              icon="mdi-storefront"
+                              :icon="getCategoryIcon(place.category_name)"
                             ></v-icon>
                           </v-avatar>
                         </template>
@@ -763,6 +763,22 @@ const pickRandom = () => {
       panTo(winner.value.y, winner.value.x, winner.value.id);
     }
   }, 80); // Fast speed
+};
+
+const getCategoryIcon = (categoryName: string) => {
+  if (!categoryName) return "mdi-storefront";
+  const cat = categoryName; // category_name usually looks like "음식점 > 한식 > ..."
+
+  if (cat.includes("카페")) return "mdi-coffee";
+  if (cat.includes("한식")) return "mdi-rice";
+  if (cat.includes("중식")) return "mdi-noodles";
+  if (cat.includes("일식") || cat.includes("초밥") || cat.includes("회")) return "mdi-fish";
+  if (cat.includes("양식") || cat.includes("피자") || cat.includes("파스타")) return "mdi-pasta";
+  if (cat.includes("분식")) return "mdi-food-hot-dog";
+  if (cat.includes("치킨")) return "mdi-food-drumstick";
+  if (cat.includes("고기") || cat.includes("구이")) return "mdi-grill";
+  
+  return "mdi-storefront";
 };
 
 const showMsg = (text: string, color = "success") => {
