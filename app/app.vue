@@ -13,7 +13,7 @@
     </v-app-bar>
 
     <v-main>
-      <v-container class="h-100 align-start pt-4 pt-md-16">
+      <v-container class="h-100 align-start pt-4">
         <v-row justify="center">
           <v-col cols="12" md="10" lg="8" xl="6">
             <!-- Map Container -->
@@ -396,6 +396,7 @@
         :color="snackbarColor"
         location="top"
         rounded="pill"
+        style="top: 80px"
       >
         <div
           class="d-flex align-center justify-center text-center w-100 font-weight-bold"
@@ -483,7 +484,7 @@ onUnmounted(() => {
 });
 
 const handleScroll = () => {
-  showScrollTop.value = window.scrollY > 300;
+  showScrollTop.value = window.scrollY > 500;
 };
 
 const scrollToTop = () => {
@@ -774,7 +775,7 @@ const showMsg = (text: string, color = "success") => {
 <style scoped>
 .map-card-container {
   position: relative;
-  height: 500px;
+  height: 450px;
   width: 100%;
 }
 
