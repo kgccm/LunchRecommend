@@ -288,7 +288,7 @@
             <!-- Address (Clickable) -->
             <v-card
               v-if="winner"
-              class="mx-auto rounded-lg mb-2 pa-3 d-flex align-center justify-center cursor-pointer hover-effect border-thin"
+              class="mx-auto rounded-lg mb-4 pa-5 d-flex align-center justify-center cursor-pointer hover-effect border-thin"
               variant="outlined"
               color="grey-lighten-2"
               :href="winner.place_url"
