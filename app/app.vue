@@ -113,40 +113,30 @@
               </div>
             </v-card>
 
-            <!-- Results Section -->
-            <v-slide-y-transition>
-              <div v-if="restaurants.length > 0">
-                <div
-                  class="d-flex flex-wrap justify-space-between align-end mb-4 px-2 gap-2"
-                >
-                  <div>
-                    <span
-                      class="text-h6 text-md-h5 font-weight-bold text-grey-darken-3"
+              <!-- List -->
+              <v-slide-y-transition>
+                <!-- Skeleton Loader -->
+                <div v-if="loading" class="mt-4">
+                  <v-row>
+                    <v-col
+                      cols="12"
+                      sm="6"
+                      lg="4"
+                      v-for="n in 6"
+                      :key="n"
                     >
-                      발견한 맛집
-                    </span>
-                    <v-chip
-                      class="ml-2 font-weight-bold"
-                      color="warning"
-                      size="small"
-                      variant="flat"
-                    >
-                      {{ restaurants.length }}곳
-                    </v-chip>
-                  </div>
-                  <v-btn
-                    color="secondary"
-                    size="large"
-                    prepend-icon="mdi-slot-machine"
-                    class="font-weight-bold text-white pulse-animation w-100 w-sm-auto mt-2 mt-sm-0"
-                    elevation="4"
-                    @click="pickRandom"
-                  >
-                    랜덤 추천 돌리기
-                  </v-btn>
+                      <v-skeleton-loader
+                        class="rounded-lg border-thin"
+                        type="card"
+                        height="200"
+                        elevation="0"
+                      ></v-skeleton-loader>
+                    </v-col>
+                  </v-row>
                 </div>
 
-                <v-row>
+                <div v-else-if="restaurants.length > 0">
+                  <v-row>
                   <v-col
                     v-for="(place, index) in restaurants"
                     :key="place.id"
@@ -294,37 +284,48 @@
             <div class="text-h5 font-weight-bold text-grey-darken-3 mb-2">
               {{ winner?.place_name }}
             </div>
-            <v-chip color="secondary" class="mb-6 font-weight-bold">
-              {{ winner?.category_name?.split(">").pop()?.trim() }}
-            </v-chip>
+            
+            <div v-if="!isRolling">
+              <v-chip color="secondary" class="mb-6 font-weight-bold">
+                {{ winner?.category_name?.split(">").pop()?.trim() }}
+              </v-chip>
 
-            <!-- Address (Clickable) -->
-            <v-card
-              v-if="winner"
-              class="mx-auto rounded-lg mb-4 pa-5 d-flex align-center justify-center cursor-pointer hover-effect border-thin"
-              variant="outlined"
-              color="grey-lighten-2"
-              :href="winner.place_url"
-              target="_blank"
-              rel="noopener noreferrer"
-              max-width="360"
-            >
-              <div class="d-flex flex-column align-center text-grey-darken-3">
-                <div class="d-flex align-center gap-1 mb-1">
-                  <v-icon size="small" color="primary">mdi-map-marker</v-icon>
-                  <span class="text-body-2 font-weight-medium text-decoration-underline">
-                    {{ winner.road_address_name || winner.address_name }}
-                  </span>
+              <!-- Address (Clickable) -->
+              <v-card
+                v-if="winner"
+                class="mx-auto rounded-lg mb-4 pa-5 d-flex align-center justify-center cursor-pointer hover-effect border-thin"
+                variant="outlined"
+                color="grey-lighten-2"
+                :href="winner.place_url"
+                target="_blank"
+                rel="noopener noreferrer"
+                max-width="360"
+              >
+                <div class="d-flex flex-column align-center text-grey-darken-3">
+                  <div class="d-flex align-center gap-1 mb-1">
+                    <v-icon size="small" color="primary">mdi-map-marker</v-icon>
+                    <span class="text-body-2 font-weight-medium text-decoration-underline">
+                      {{ winner.road_address_name || winner.address_name }}
+                    </span>
+                  </div>
+                  <div class="text-caption text-primary font-weight-bold d-flex align-center">
+                    상세보기 <v-icon size="x-small" icon="mdi-chevron-right"></v-icon>
+                  </div>
                 </div>
-                <div class="text-caption text-primary font-weight-bold d-flex align-center">
-                  상세보기 <v-icon size="x-small" icon="mdi-chevron-right"></v-icon>
-                </div>
+              </v-card>
+            </div>
+            
+            <!-- Rolling State UI -->
+            <div v-else class="py-10">
+              <v-progress-circular indeterminate color="warning" size="40"></v-progress-circular>
+              <div class="mt-4 text-body-1 font-weight-bold text-grey-darken-2">
+                메뉴 고르는 중...
               </div>
-            </v-card>
+            </div>
           </v-card-text>
 
           <v-card-actions class="justify-center mt-4 gap-2">
-            <v-btn variant="text" color="grey" @click="pickRandom"
+            <v-btn variant="text" color="grey" @click="pickRandom" :disabled="isRolling"
               >다시 하기</v-btn
             >
             <v-btn
@@ -332,6 +333,7 @@
               variant="flat"
               size="large"
               @click="dialog = false"
+              :disabled="isRolling"
               >확인</v-btn
             >
           </v-card-actions>
@@ -369,6 +371,7 @@ const snackbar = ref(false);
 const snackbarText = ref("");
 const snackbarColor = ref("success");
 const showScrollTop = ref(false);
+const isRolling = ref(false);
 
 // Categories
 const categories = [
@@ -689,10 +692,26 @@ const panTo = (lat: any, lon: any, id: string) => {
 
 const pickRandom = () => {
   if (restaurants.value.length === 0) return;
-  const index = Math.floor(Math.random() * restaurants.value.length);
-  winner.value = restaurants.value[index];
+  
   dialog.value = true;
-  panTo(winner.value.y, winner.value.x, winner.value.id);
+  isRolling.value = true;
+  
+  // Roulette Animation
+  let counter = 0;
+  const maxRolls = 20; // 2 seconds (20 * 100ms)
+  
+  const interval = setInterval(() => {
+    const randomIndex = Math.floor(Math.random() * restaurants.value.length);
+    winner.value = restaurants.value[randomIndex];
+    counter++;
+    
+    if (counter >= maxRolls) {
+      clearInterval(interval);
+      isRolling.value = false;
+      // Pan to final winner
+      panTo(winner.value.y, winner.value.x, winner.value.id);
+    }
+  }, 80); // Fast speed
 };
 
 const showMsg = (text: string, color = "success") => {
