@@ -115,7 +115,7 @@
 
             <!-- Results Header & Random Button -->
             <div
-              v-if="restaurants.length > 0"
+              v-if="restaurants.length > 0 || loading"
               class="d-flex flex-wrap justify-space-between align-end mb-4 px-2 gap-2"
             >
               <div>
@@ -124,7 +124,9 @@
                 >
                   발견한 맛집
                 </span>
+                <!-- Show actual count or a placeholder/spinner when loading -->
                 <v-chip
+                  v-if="!loading"
                   class="ml-2 font-weight-bold"
                   color="warning"
                   size="small"
@@ -132,6 +134,14 @@
                 >
                   {{ restaurants.length }}곳
                 </v-chip>
+                <v-progress-circular
+                  v-else
+                  indeterminate
+                  color="warning"
+                  size="20"
+                  width="2"
+                  class="ml-2"
+                ></v-progress-circular>
               </div>
               <v-btn
                 color="secondary"
@@ -140,6 +150,7 @@
                 class="font-weight-bold text-white pulse-animation w-100 w-sm-auto mt-2 mt-sm-0"
                 elevation="4"
                 @click="pickRandom"
+                :disabled="loading || restaurants.length === 0"
               >
                 랜덤 추천 돌리기
               </v-btn>
