@@ -285,12 +285,29 @@
               {{ winner?.category_name?.split(">").pop()?.trim() }}
             </v-chip>
 
-            <div
-              class="bg-grey-lighten-4 pa-4 rounded-lg text-body-2 text-grey-darken-2 d-flex align-center justify-center gap-2"
+            <!-- Address (Clickable) -->
+            <v-card
+              v-if="winner"
+              class="mx-auto rounded-lg mb-2 pa-3 d-flex align-center justify-center cursor-pointer hover-effect border-thin"
+              variant="outlined"
+              color="grey-lighten-2"
+              :href="winner.place_url"
+              target="_blank"
+              rel="noopener noreferrer"
+              max-width="360"
             >
-              <v-icon size="small" color="grey">mdi-map-marker</v-icon>
-              {{ winner?.road_address_name || winner?.address_name }}
-            </div>
+              <div class="d-flex flex-column align-center text-grey-darken-3">
+                <div class="d-flex align-center gap-1 mb-1">
+                  <v-icon size="small" color="primary">mdi-map-marker</v-icon>
+                  <span class="text-body-2 font-weight-medium text-decoration-underline">
+                    {{ winner.road_address_name || winner.address_name }}
+                  </span>
+                </div>
+                <div class="text-caption text-primary font-weight-bold d-flex align-center">
+                  상세보기 <v-icon size="x-small" icon="mdi-chevron-right"></v-icon>
+                </div>
+              </div>
+            </v-card>
           </v-card-text>
 
           <v-card-actions class="justify-center mt-4 gap-2">
