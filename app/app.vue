@@ -420,6 +420,10 @@ const getCurrentLocation = () => {
     loading.value = true;
     showMsg("현 위치로 이동합니다...", "info");
 
+    // Reset search state
+    searchQuery.value = "";
+    selectedCategory.value = "전체";
+
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         // @ts-ignore
@@ -434,7 +438,7 @@ const getCurrentLocation = () => {
         map.panTo(locPosition);
         loading.value = false;
 
-        // Auto search after finding location
+        // Auto search nearby restaurants after moving
         setTimeout(() => searchNearbyRestaurants(), 500);
       },
       (err) => {
