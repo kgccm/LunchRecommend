@@ -161,13 +161,13 @@
               <v-slide-y-transition>
                 <div v-if="restaurants.length > 0">
                   <v-row>
-                  <v-col
-                    v-for="(place, index) in restaurants"
-                    :key="place.id"
-                    cols="12"
-                    sm="6"
-                    lg="4"
-                  >
+                    <v-col
+                      v-for="(place, index) in restaurants"
+                      :key="place.id"
+                      cols="12"
+                      sm="6"
+                      lg="4"
+                    >
                     <v-card
                       class="h-100 restaurant-card border-thin"
                       elevation="0"
@@ -231,7 +231,7 @@
                       </v-card-actions>
                     </v-card>
                   </v-col>
-                </v-row>
+                  </v-row>
 
                 <!-- Load More Button -->
                 <div
